@@ -89,9 +89,20 @@ spec:
 
 
 
-    - id: register
-      name: Registering the new Component 
+     - id: register_app
+      name: Register Application
       action: catalog:register
       input:
-        repoContentsUrl: ${{steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/component-info.yaml'
+        catalogInfo:
+          apiVersion: backstage.io/v1alpha1
+          kind: Component
+          metadata:
+            name: ${{ parameters.InstanceName }}
+            annotations:
+              github.com/project-slug: raviiai/ec2-instance
+            title: 'IA for Instance Automation'
+            description: An example of an Instance Creation
+          spec:
+            type: service
+            owner: user:raviiai
+            lifecycle: experimental
