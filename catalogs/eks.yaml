@@ -1,98 +1,97 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: v1beta3-demo
-  title: Test Action template
-  description: scaffolder v1beta3 template demo
+  name: create-ec2-instance
+  title: Create an EC2 Instance
+  description: Create an Instance to deploy your application
+  tags: ['recommended']
 spec:
-  owner: backstage/techdocs-core
+  owner: guests
   type: service
-
   parameters:
-    - title: Fill in some steps
+    - title: EC2 Instance Creation
       required:
-        - name
-        - clusterName
-        - clusterRegion
+        - InstanceName
+        - Region
+        - InstanceType
       properties:
-        name:
-          title: Name
+        InstanceName:
+          title: Instance Name
           type: string
-          description: Unique name of the component
+          description: Name of the Instance to be created
           ui:autofocus: true
           ui:options:
             rows: 5
-        owner:
-          title: Owner
+        Region:
+          title: AWS Region
           type: string
-          description: Owner of the component
-          ui:field: OwnerPicker
-          ui:options:
-            catalogFilter:
-              kind: Group
-        clusterName:
-          title: Cluster Name
+          description: Name of the region where you want to create your create-ec2-instance, e.g., us-east-1, ap-south-1, etc.
+        InstanceType:
+          title: Type of Instance
           type: string
-          description: Name of the Kubernetes cluster
-        clusterRegion:
-          title: Cluster Region
+          description: Type of the instance that you want to deploy, e.g., t2.medium, t3.medium, etc.
+          enum:
+            - t2.medium
+            - t2.small
+            - t2.micro
+            - t3.medium
+        action:
+          title: Action
           type: string
-          description: Region where the cluster is located
+          description: What action do you want to perform? Create or delete?
+          enum:
+            - apply
+            - destroy
+
+    - title: Choose a Repository Location
+      required:
+        - repoUrl
+      properties:
         repoUrl:
-          title: Repository Location
+          title: Location of the repository
           type: string
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - github.com
+              - github.com        
 
   steps:
     - id: fetch-base
-      name: Fetch Base
+      name: Fetching Details from content folder
       action: fetch:template
       input:
-        url: ./template
+        url: ./content
         values:
-          name: ${{ parameters.name }}
-          owner: ${{ parameters.owner }}
-          clusterName: ${{ parameters.clusterName }}
-          clusterRegion: ${{ parameters.clusterRegion }}
+          name: ${{ parameters.InstanceName }}
 
-    - id: fetch-docs
-      name: Fetch Docs
-      action: fetch:plain
-      input:
-        targetPath: ./community
-        url: https://github.com/backstage/community/tree/main/backstage-community-sessions
 
     - id: publish
       name: Publish
       action: publish:github
       input:
         allowedHosts: ['github.com']
-        description: This is ${{ parameters.name }}
+        description: This is ${{ parameters.InstanceName }}
         repoUrl: ${{ parameters.repoUrl }}
+
+
+    - id: github-action
+      name: Starting GitHub action
+      action: github:actions:dispatch
+      input:
+        workflowId: instance.yml
+        repoUrl: 'github.com?repo=ec2-instance&owner=raviiai'
+        branchOrTagName: 'main'
+        workflowInputs:
+          instanceName: ${{ parameters.InstanceName }}
+          awsRegion: ${{ parameters.Region }}
+          instanceType: ${{ parameters.InstanceType }}
+          action: ${{ parameters.action }}
+
+
 
     - id: register
-      name: Register
+      name: Registering the new Component 
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
-
-    - id: invoke-github-action
-      name: Invoke GitHub Action
-      action: run:github-actions
-      input:
-        repoUrl: ${{ parameters.repoUrl }}
-        actionInputs:
-          clusterName: ${{ parameters.clusterName }}
-          clusterRegion: ${{ parameters.clusterRegion }}
-
-  output:
-    links:
-      - title: Repository
-        url: ${{ steps['publish'].output.remoteUrl }}
-      - title: Open in catalog
-        icon: catalog
-        entityRef: ${{ steps['register'].output.entityRef }}
+        repoContentsUrl: ${{steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/component-info.yaml'
