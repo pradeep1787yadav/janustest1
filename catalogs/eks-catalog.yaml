@@ -1,0 +1,30 @@
+apiVersion: backstage.io/v1beta3
+kind: Template
+metadata:
+  name: github-action-template
+  title: GitHub Actions Template
+  description: A template to invoke GitHub Actions with AWS region input
+spec:
+  owner: example-team
+  type: service
+  parameters:
+    - title: GitHub Actions Parameters
+      properties:
+        awsRegion:
+          title: AWS Region
+          type: string
+          description: The AWS region to use
+          enum:
+            - us-east-1
+            - us-west-2
+            - eu-west-1
+  steps:
+    - id: invoke-github-action
+      name: Invoke GitHub Action
+      action: community:github:actions:workflow-dispatch
+      input:
+        repoUrl: 'github.com/your-org/your-repo'
+        workflowId: 'your-workflow-file.yml'
+        ref: 'main'
+        inputs:
+          aws_region: '{{ parameters.awsRegion }}'
