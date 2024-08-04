@@ -102,7 +102,7 @@ spec:
               github.com/project-slug: raviiai/ec2-instance
             title: 'IA for Instance Automation'
             description: An example of an Instance Creation
-          spec:
-            type: service
-            owner: user:raviiai
-            lifecycle: experimental
+            spec:
+              type: service
+              owner: user:raviiai
+              lifecycle: experimental
