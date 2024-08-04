@@ -4,7 +4,8 @@ metadata:
   name: create-ec2-instance
   title: Create an EC2 Instance
   description: Create an Instance to deploy your application
-  tags: ['recommended']
+  tags:
+    - recommended
 spec:
   owner: raviiai
   type: service
@@ -14,6 +15,7 @@ spec:
         - InstanceName
         - Region
         - InstanceType
+        - action
       properties:
         InstanceName:
           title: Instance Name
@@ -25,7 +27,7 @@ spec:
         Region:
           title: AWS Region
           type: string
-          description: Name of the region where you want to create your create-ec2-instance, e.g., us-east-1, ap-south-1, etc.
+          description: Name of the region where you want to create your instance, e.g., us-east-1, ap-south-1, etc.
         InstanceType:
           title: Type of Instance
           type: string
@@ -64,18 +66,17 @@ spec:
         values:
           name: ${{ parameters.InstanceName }}
 
-
     - id: publish
       name: Publish
       action: publish:github
       input:
-        allowedHosts: ['github.com']
+        allowedHosts:
+          - github.com
         description: This is ${{ parameters.InstanceName }}
         repoUrl: ${{ parameters.repoUrl }}
 
-
     - id: github-action
-      name: Starting GitHub action
+      name: Starting GitHub Action
       action: github:actions:dispatch
       input:
         workflowId: instance.yml
@@ -87,9 +88,7 @@ spec:
           instanceType: ${{ parameters.InstanceType }}
           action: ${{ parameters.action }}
 
-
-
-     - id: register_app
+    - id: register_app
       name: Register Application
       action: catalog:register
       input:
@@ -102,7 +101,7 @@ spec:
               github.com/project-slug: raviiai/ec2-instance
             title: 'IA for Instance Automation'
             description: An example of an Instance Creation
-            spec:
-              type: service
-              owner: user:raviiai
-              lifecycle: experimental
+          spec:
+            type: service
+            owner: user:raviiai
+            lifecycle: experimental
