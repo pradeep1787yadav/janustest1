@@ -6,7 +6,7 @@ metadata:
   description: Create an Instance to deploy your application
   tags: ['recommended']
 spec:
-  owner: guests
+  owner: raviiai
   type: service
   parameters:
     - title: EC2 Instance Creation
