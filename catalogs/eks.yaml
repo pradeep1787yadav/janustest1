@@ -7,7 +7,7 @@ metadata:
   tags:
     - recommended
 spec:
-  owner: raviiai
+  owner: pradeep1787yadav
   type: service
   parameters:
     - title: EC2 Instance Creation
@@ -80,7 +80,7 @@ spec:
       action: github:actions:dispatch
       input:
         workflowId: instance.yml
-        repoUrl: 'github.com?repo=ec2-instance&owner=raviiai'
+        repoUrl: 'github.com?repo=ec2-instance&owner=pradeep1787yadav'
         branchOrTagName: 'main'
         workflowInputs:
           instanceName: ${{ parameters.InstanceName }}
@@ -98,10 +98,10 @@ spec:
     #       metadata:
     #         name: ${{ parameters.InstanceName }}
     #         annotations:
-    #           github.com/project-slug: raviiai/ec2-instance
+    #           github.com/project-slug: pradeep1787yadav/ec2-instance
     #         title: 'IA for Instance Automation'
     #         description: An example of an Instance Creation
     #       spec:
     #         type: service
-    #         owner: user:raviiai
+    #         owner: user:pradeep1787yadav
     #         lifecycle: experimental
