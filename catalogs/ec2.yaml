@@ -87,7 +87,13 @@ spec:
           awsRegion: ${{ parameters.Region }}
           instanceType: ${{ parameters.InstanceType }}
           action: ${{ parameters.action }}
-
+          
+    - id: register
+      name: Registering the new Component 
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/component-info.yaml'
     # - id: register_app
     #   name: Register Application
     #   action: catalog:register
