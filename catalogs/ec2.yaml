@@ -66,14 +66,14 @@ spec:
         values:
           name: ${{ parameters.InstanceName }}
 
-    - id: publish
-      name: Publish
-      action: publish:github
-      input:
-        allowedHosts:
-          - github.com
-        description: This is ${{ parameters.InstanceName }}
-        repoUrl: ${{ parameters.repoUrl }}
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github
+    #   input:
+    #     allowedHosts:
+    #       - github.com
+    #     description: This is ${{ parameters.InstanceName }}
+    #     repoUrl: ${{ parameters.repoUrl }}
 
     - id: github-action
       name: Starting GitHub Action
